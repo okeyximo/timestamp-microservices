@@ -27,30 +27,25 @@ app.get("/", function (req, res) {
 app.get("/api", (req, res) => {
   let now = new Date()
   res.json({
-    "unix" : now.getTime(), 
-    "utc" : now.getUTCString()
+    "unix": now.getTime(),
+    "utc": now.toUTCString()
   })
 })
-app.get("/api/:date_string", (req, res)=>{
-let dateString = req.params.date_string
-if (!dateString.match(/-/g)) {
-  dateString = +dateString
-}
-let date = new Date(dateString)
-// console.log(passedInValue)
+app.get("/api/:date_string", (req, res) => {
+  let dateString = req.params.date_string
+  if (dateString.match(/\d{5,}/g)) {
+    dateString = +dateString
+    // console.log(dateInt)
+    // res.json({"unix" : dateInt, "utc": dateInt.toUTCString })
+  }
+  let date = new Date(dateString)
+  if (date == "Invalid Date") {
+    res.json({ "error": "Invalid Date" })
+  }
+   res.json({ "unix": date.valueOf(),"utc": date.toUTCString()
+   })
+  })
 
-
-// res.json({"unix" : Date.passedInValue.getTime(), "utc": Date.passedInValue.toUTCString()})
-if ( date == "Invalid Date"){
-   res.json({"error" : "Invalid Date"})
-}
-else{
-  res.json({ 
-    "unix": date.getTime(),
-    "utc" : date.toUTCString()
-  })}
-} 
-)
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
